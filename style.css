@@ -1,508 +1,383 @@
-/* Variables globales de color, sombras y tonos principales del diseño */
 :root {
-  --gold: #d4af37; /* Dorado principal */
-  --gold-soft: #f3d67a; /* Dorado suave */
-  --gold-bright: #ffe8a3; /* Dorado más brillante */
-  --green-1: #14532d; /* Verde principal de la mesa */
-  --green-2: #0f3f22; /* Verde intermedio */
-  --green-3: #0a2816; /* Verde oscuro */
-  --cream: #f8f3e7; /* Color crema para texto principal */
-  --text-muted: #d0c7b4; /* Texto secundario o apagado */
-  --danger: #c63f3f; /* Rojo para derrota o peligro */
-  --success: #39b36b; /* Verde para victoria o éxito */
-  --shadow-deep: 0 20px 50px rgba(0, 0, 0, 0.45); /* Sombra profunda */
-  --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.28); /* Sombra más suave */
+  --gold: #d4af37;
+  --gold-soft: #f3d67a;
+  --gold-bright: #ffe8a3;
+  --green-1: #14532d;
+  --green-2: #0f3f22;
+  --green-3: #0a2816;
+  --cream: #f8f3e7;
+  --text-muted: #d0c7b4;
+  --danger: #c63f3f;
+  --success: #39b36b;
+  --shadow-deep: 0 20px 50px rgba(0, 0, 0, 0.45);
+  --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.28);
 }
 
-/* Reinicio general de márgenes, paddings y cálculo de cajas */
 * {
-  margin: 0; /* Elimina margen por defecto */
-  padding: 0; /* Elimina padding por defecto */
-  box-sizing: border-box; /* Incluye padding y border dentro del width/height */
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-/* Estilo general del body */
 body {
-  font-family: "Inter", sans-serif; /* Fuente principal del sitio */
-  min-height: 100vh; /* Altura mínima igual al alto de la pantalla */
-  color: var(--cream); /* Color de texto principal */
+  font-family: "Inter", sans-serif;
+  min-height: 100vh;
+  color: var(--cream);
   background:
-    radial-gradient(circle at top, rgba(212, 175, 55, 0.08), transparent 20%), /* Brillo dorado arriba */
-    radial-gradient(circle at bottom, rgba(255, 255, 255, 0.04), transparent 20%), /* Brillo suave abajo */
-    linear-gradient(160deg, #06110c 0%, #0a1b13 50%, #030806 100%); /* Fondo oscuro degradado */
-  overflow-x: hidden; /* Evita scroll horizontal */
+    radial-gradient(circle at top, rgba(212, 175, 55, 0.08), transparent 20%),
+    radial-gradient(circle at bottom, rgba(255, 255, 255, 0.04), transparent 20%),
+    linear-gradient(160deg, #06110c 0%, #0a1b13 50%, #030806 100%);
+  overflow-x: hidden;
 }
 
-/* Fondo ambiental fijo con manchas de luz */
 .ambient-bg {
-  position: fixed; /* Se mantiene fijo en pantalla */
-  inset: 0; /* Ocupa todo el viewport */
+  position: fixed;
+  inset: 0;
   background:
-    radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.07), transparent 18%), /* Mancha dorada izquierda */
-    radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.03), transparent 16%), /* Mancha clara derecha */
-    radial-gradient(circle at 50% 80%, rgba(212, 175, 55, 0.05), transparent 18%); /* Mancha inferior */
-  filter: blur(14px); /* Difumina el fondo */
-  pointer-events: none; /* No bloquea clics */
+    radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.07), transparent 18%),
+    radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.03), transparent 16%),
+    radial-gradient(circle at 50% 80%, rgba(212, 175, 55, 0.05), transparent 18%);
+  filter: blur(14px);
+  pointer-events: none;
 }
 
-/* Capa de partículas decorativas */
 .particles {
-  position: fixed; /* Fija en toda la pantalla */
-  inset: 0; /* Ocupa todo */
-  pointer-events: none; /* No interfiere con clics */
-  opacity: 0.18; /* Transparencia */
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.18;
   background-image:
-    radial-gradient(circle, #ffffff 1px, transparent 1px), /* Puntos blancos */
-    radial-gradient(circle, #d4af37 1px, transparent 1px); /* Puntos dorados */
-  background-size: 120px 120px, 180px 180px; /* Tamaño del patrón */
-  background-position: 0 0, 40px 60px; /* Desfase entre patrones */
-  animation: driftParticles 18s linear infinite; /* Animación de movimiento */
+    radial-gradient(circle, #ffffff 1px, transparent 1px),
+    radial-gradient(circle, #d4af37 1px, transparent 1px);
+  background-size: 120px 120px, 180px 180px;
+  background-position: 0 0, 40px 60px;
+  animation: driftParticles 18s linear infinite;
 }
 
-/* Animación vertical suave de partículas */
 @keyframes driftParticles {
-  from { transform: translateY(0); } /* Posición inicial */
-  to { transform: translateY(-40px); } /* Se desplaza hacia arriba */
+  from { transform: translateY(0); }
+  to { transform: translateY(-40px); }
 }
 
-/* Contenedor principal de todo el juego */
 .game-shell {
-  width: 100%; /* Ocupa todo el ancho disponible */
-  max-width: 1180px; /* Limita el ancho máximo */
-  margin: 0 auto; /* Centra horizontalmente */
-  padding: 14px 18px 18px; /* Espaciado interno */
-  position: relative; /* Permite posicionar hijos relativos */
-  z-index: 2; /* Por encima del fondo */
-  min-height: 100vh; /* Altura mínima completa */
-  display: flex; /* Layout flexible */
-  flex-direction: column; /* Elementos apilados verticalmente */
-  justify-content: space-between; /* Reparte el espacio entre bloques */
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 14px 18px 18px;
+  position: relative;
+  z-index: 2;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-/* Barra superior con logo y HUD */
 .top-bar {
-  display: flex; /* Distribución horizontal */
-  justify-content: space-between; /* Espacio entre extremos */
-  align-items: center; /* Alineación vertical centrada */
-  gap: 16px; /* Espacio entre elementos */
-  margin-bottom: 12px; /* Separación inferior */
-  flex-wrap: wrap; /* Permite salto de línea */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
 }
 
-/* Título principal del bloque de marca */
 .brand-block h1 {
-  font-family: "Cinzel", serif; /* Fuente elegante para casino */
-  font-size: 2.2rem; /* Tamaño grande */
-  font-weight: 800; /* Muy gruesa */
-  color: var(--gold-soft); /* Dorado suave */
-  text-shadow: 0 4px 18px rgba(212, 175, 55, 0.18); /* Brillo/sombra dorada */
+  font-family: "Cinzel", serif;
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--gold-soft);
+  text-shadow: 0 4px 18px rgba(212, 175, 55, 0.18);
 }
 
-/* Etiqueta pequeña encima del título */
 .mini-label {
-  font-size: 0.72rem; /* Tamaño pequeño */
-  text-transform: uppercase; /* Todo en mayúsculas */
-  letter-spacing: 2px; /* Separación entre letras */
-  color: var(--gold); /* Dorado */
-  margin-bottom: 4px; /* Separación inferior */
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--gold);
+  margin-bottom: 4px;
 }
 
-/* Subtítulo de la cabecera */
 .subtitle {
-  color: var(--text-muted); /* Texto más tenue */
-  margin-top: 4px; /* Separación arriba */
-  font-size: 0.92rem; /* Tamaño medio pequeño */
+  color: var(--text-muted);
+  margin-top: 4px;
+  font-size: 0.92rem;
 }
 
-/* Panel que contiene cajas del HUD */
 .hud-panel {
-  display: flex; /* Distribución horizontal */
-  gap: 12px; /* Espacio entre cajas */
-  flex-wrap: wrap; /* Permite bajar a otra línea */
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
-/* Caja individual del HUD */
 .hud-box {
-  min-width: 135px; /* Ancho mínimo */
-  background: linear-gradient(180deg, rgba(30, 30, 30, 0.82), rgba(10, 10, 10, 0.82)); /* Fondo oscuro translúcido */
-  border: 1px solid rgba(212, 175, 55, 0.26); /* Borde dorado tenue */
-  border-radius: 14px; /* Bordes redondeados */
-  padding: 10px 14px; /* Espaciado interno */
-  box-shadow: var(--shadow-soft); /* Sombra */
+  min-width: 135px;
+  background: linear-gradient(180deg, rgba(30, 30, 30, 0.82), rgba(10, 10, 10, 0.82));
+  border: 1px solid rgba(212, 175, 55, 0.26);
+  border-radius: 14px;
+  padding: 10px 14px;
+  box-shadow: var(--shadow-soft);
 }
 
-/* Texto de la etiqueta del HUD */
 .hud-label {
-  display: block; /* Ocupa línea completa */
-  font-size: 0.74rem; /* Tamaño pequeño */
-  color: var(--text-muted); /* Color apagado */
-  text-transform: uppercase; /* Mayúsculas */
-  letter-spacing: 1.4px; /* Separación de letras */
-  margin-bottom: 5px; /* Separación inferior */
+  display: block;
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  margin-bottom: 5px;
 }
 
-/* Valor importante mostrado en HUD */
 .hud-value {
-  font-size: 1.15rem; /* Tamaño mayor */
-  font-weight: 800; /* Muy marcado */
-  color: var(--gold-bright); /* Dorado brillante */
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--gold-bright);
 }
 
-/* Panel donde se muestra el estado del juego */
 .status-panel {
-  background: linear-gradient(180deg, rgba(31, 31, 31, 0.75), rgba(9, 9, 9, 0.75)); /* Fondo oscuro */
-  border: 1px solid rgba(212, 175, 55, 0.25); /* Borde dorado */
-  border-radius: 16px; /* Bordes redondeados */
-  padding: 10px 14px; /* Espaciado interno */
-  margin-bottom: 12px; /* Separación inferior */
-  box-shadow: var(--shadow-soft); /* Sombra suave */
-  text-align: center; /* Texto centrado */
+  background: linear-gradient(180deg, rgba(31, 31, 31, 0.75), rgba(9, 9, 9, 0.75));
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 16px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow-soft);
+  text-align: center;
 }
 
-/* Párrafo del panel de estado */
 .status-panel p {
-  font-size: 0.95rem; /* Tamaño legible */
-  font-weight: 700; /* Negrita */
-  color: var(--cream); /* Texto crema */
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--cream);
 }
 
-/* Panel de apuestas */
 .betting-panel {
-  display: flex; /* Distribución horizontal */
-  justify-content: space-between; /* Reparte bloques */
-  align-items: center; /* Centra verticalmente */
-  gap: 14px; /* Separación entre bloques */
-  flex-wrap: wrap; /* Permite varias filas */
-  margin-bottom: 14px; /* Separación inferior */
-  background: linear-gradient(180deg, rgba(17, 27, 21, 0.85), rgba(7, 14, 10, 0.85)); /* Fondo verde oscuro */
-  border: 1px solid rgba(212, 175, 55, 0.18); /* Borde tenue */
-  border-radius: 18px; /* Bordes redondos */
-  padding: 12px 16px; /* Espaciado interno */
-  box-shadow: var(--shadow-soft); /* Sombra */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+  background: linear-gradient(180deg, rgba(17, 27, 21, 0.85), rgba(7, 14, 10, 0.85));
+  border: 1px solid rgba(212, 175, 55, 0.18);
+  border-radius: 18px;
+  padding: 12px 16px;
+  box-shadow: var(--shadow-soft);
 }
 
-/* Título de la sección de apuestas */
 .betting-title {
-  font-family: "Cinzel", serif; /* Fuente decorativa */
-  font-size: 1rem; /* Tamaño normal */
-  margin-bottom: 8px; /* Separación inferior */
-  color: var(--gold-soft); /* Dorado suave */
+  font-family: "Cinzel", serif;
+  font-size: 1rem;
+  margin-bottom: 8px;
+  color: var(--gold-soft);
 }
 
-/* Fila de fichas de apuesta */
 .chips-row {
-  display: flex; /* Coloca fichas en línea */
-  gap: 10px; /* Espacio entre fichas */
-  flex-wrap: wrap; /* Permite varias líneas */
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
-/* Estilo base de cada ficha */
 .bet-chip {
-  width: 62px; /* Ancho */
-  height: 62px; /* Alto */
-  border-radius: 50%; /* Forma circular */
-  border: 3px solid rgba(255,255,255,0.18); /* Borde claro */
-  cursor: pointer; /* Cursor clicable */
-  font-weight: 800; /* Texto grueso */
-  font-size: 0.9rem; /* Tamaño del valor */
-  color: white; /* Color del texto */
-  box-shadow: inset 0 0 0 6px rgba(255,255,255,0.12), 0 10px 18px rgba(0,0,0,0.28); /* Efecto interior y sombra */
-  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease; /* Transiciones suaves */
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  border: 3px solid rgba(255,255,255,0.18);
+  cursor: pointer;
+  font-weight: 800;
+  font-size: 0.9rem;
+  color: white;
+  box-shadow: inset 0 0 0 6px rgba(255,255,255,0.12), 0 10px 18px rgba(0,0,0,0.28);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
 }
 
-/* Efecto hover de ficha */
 .bet-chip:hover {
-  transform: translateY(-4px) scale(1.05); /* Se eleva un poco */
-  filter: brightness(1.05); /* Se ilumina */
+  transform: translateY(-4px) scale(1.05);
+  filter: brightness(1.05);
 }
 
-/* Color de ficha de 10 */
 .bet-chip-10 {
   background: radial-gradient(circle at 30% 30%, #7fe2ff, #0a7ca3 72%);
 }
 
-/* Color de ficha de 25 */
 .bet-chip-25 {
   background: radial-gradient(circle at 30% 30%, #ff8f8f, #8f1616 72%);
 }
 
-/* Color de ficha de 50 */
 .bet-chip-50 {
   background: radial-gradient(circle at 30% 30%, #8d8d8d, #101010 72%);
 }
 
-/* Color de ficha de 100 */
 .bet-chip-100 {
   background: radial-gradient(circle at 30% 30%, #ffe6a0, #a27400 75%);
-  color: #2d2207; /* Texto oscuro para que contraste */
+  color: #2d2207;
 }
 
-/* Botón secundario */
 .secondary-btn {
-  padding: 10px 16px; /* Espaciado interno */
-  border: 1px solid rgba(212, 175, 55, 0.22); /* Borde dorado */
-  border-radius: 12px; /* Bordes redondeados */
-  background: rgba(255,255,255,0.04); /* Fondo semitransparente */
-  color: var(--cream); /* Texto claro */
-  font-weight: 700; /* Negrita */
-  cursor: pointer; /* Clicable */
-  transition: transform 0.18s ease, background 0.18s ease; /* Transición */
+  padding: 10px 16px;
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.04);
+  color: var(--cream);
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.18s ease, background 0.18s ease;
 }
 
-/* Efecto hover del botón secundario */
 .secondary-btn:hover {
-  transform: translateY(-2px); /* Se eleva un poco */
-  background: rgba(255,255,255,0.08); /* Se aclara el fondo */
+  transform: translateY(-2px);
+  background: rgba(255,255,255,0.08);
 }
 
-/* Zona que contiene la mesa */
 .table-area {
-  margin-bottom: 14px; /* Separación inferior */
-  flex: 1; /* Toma espacio restante */
-  display: flex; /* Flexbox */
+  margin-bottom: 14px;
+  flex: 1;
+  display: flex;
 }
 
-/* Aro exterior decorativo de la mesa */
 .table-ring {
-  background: linear-gradient(145deg, #8b6a18, #f1d37d 40%, #7a5e16 85%); /* Borde dorado */
-  padding: 10px; /* Espacio para el borde */
-  border-radius: 34px; /* Bordes redondos */
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45); /* Sombra profunda */
-  width: 100%; /* Ocupa todo el ancho */
-  display: flex; /* Flexbox */
+  background: linear-gradient(145deg, #8b6a18, #f1d37d 40%, #7a5e16 85%);
+  padding: 10px;
+  border-radius: 34px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+  width: 100%;
+  display: flex;
 }
 
-/* Superficie verde de la mesa */
 .table-surface {
-  width: 100%; /* Ancho completo */
+  width: 100%;
   background:
-    radial-gradient(circle at center, rgba(255,255,255,0.05), transparent 40%), /* Brillo central */
-    linear-gradient(180deg, var(--green-1), var(--green-2)); /* Verde degradado */
-  border-radius: 28px; /* Bordes suaves */
-  min-height: 0; /* Evita expansión innecesaria */
-  height: 100%; /* Altura completa */
-  padding: 20px 20px 16px; /* Espaciado interior */
-  position: relative; /* Para elementos absolutos internos */
-  overflow: hidden; /* Oculta excedentes */
-  border: 4px solid rgba(255,255,255,0.06); /* Borde interior suave */
-  display: flex; /* Flexbox */
-  flex-direction: column; /* Organización vertical */
-  justify-content: space-between; /* Reparte espacios */
+    radial-gradient(circle at center, rgba(255,255,255,0.05), transparent 40%),
+    linear-gradient(180deg, var(--green-1), var(--green-2));
+  border-radius: 28px;
+  min-height: 0;
+  height: 100%;
+  padding: 20px 20px 16px;
+  position: relative;
+  overflow: hidden;
+  border: 4px solid rgba(255,255,255,0.06);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-/* Marco decorativo interno de la mesa */
 .table-surface::before {
-  content: ""; /* Pseudoelemento vacío decorativo */
-  position: absolute; /* Posición absoluta dentro de la mesa */
-  inset: 16px; /* Separación uniforme del borde */
-  border: 2px solid rgba(245, 241, 232, 0.14); /* Línea decorativa */
-  border-radius: 22px; /* Bordes redondeados */
-  pointer-events: none; /* No bloquea interacción */
+  content: "";
+  position: absolute;
+  inset: 16px;
+  border: 2px solid rgba(245, 241, 232, 0.14);
+  border-radius: 22px;
+  pointer-events: none;
 }
 
-/* Luz central suave sobre la mesa */
 .table-spotlight {
-  position: absolute; /* Absoluto dentro de la mesa */
-  inset: 0; /* Cubre todo */
-  background: radial-gradient(circle at 50% 45%, rgba(255,255,255,0.08), transparent 40%); /* Halo de luz */
-  pointer-events: none; /* No interfiere */
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 45%, rgba(255,255,255,0.08), transparent 40%);
+  pointer-events: none;
 }
 
-/* Marca decorativa del centro de la mesa */
 .table-center-mark {
-  position: absolute; /* Centrado absoluto */
+  position: absolute;
   left: 50%;
   top: 50%;
-  transform: translate(-50%, -50%); /* Centrado exacto */
-  opacity: 0.08; /* Muy tenue */
-  font-family: "Cinzel", serif; /* Fuente elegante */
-  font-size: 3rem; /* Tamaño grande */
-  font-weight: 800; /* Negrita */
-  letter-spacing: 5px; /* Espaciado amplio */
-  color: white; /* Color blanco tenue */
-  pointer-events: none; /* Decorativo */
-  user-select: none; /* No seleccionable */
+  transform: translate(-50%, -50%);
+  opacity: 0.08;
+  font-family: "Cinzel", serif;
+  font-size: 3rem;
+  font-weight: 800;
+  letter-spacing: 5px;
+  color: white;
+  pointer-events: none;
+  user-select: none;
 }
 
-/* Sección general dentro de la mesa */
 .section {
-  position: relative; /* Para controlar z-index */
-  z-index: 2; /* Encima de luces y decoración */
-  width: 100%; /* Ancho completo */
+  position: relative;
+  z-index: 2;
+  width: 100%;
 }
 
-/* Sección del dealer y del jugador */
 .dealer-section,
 .player-section {
-  width: 100%; /* Ocupan todo el ancho */
-  flex: 1; /* Reparten el espacio disponible */
-  display: flex; /* Flexbox */
-  flex-direction: column; /* Organización vertical */
-  justify-content: center; /* Centra contenido verticalmente */
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
-/* Cabecera de cada sección */
 .section-header {
-  display: flex; /* Elementos en línea */
-  justify-content: space-between; /* Título a un lado, score al otro */
-  align-items: center; /* Centrado vertical */
-  gap: 10px; /* Espacio entre elementos */
-  margin-bottom: 10px; /* Separación inferior */
-  flex-wrap: wrap; /* Permite varias líneas */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
 }
 
-/* Títulos de sección */
 .section h2 {
-  font-family: "Cinzel", serif; /* Fuente temática */
-  font-size: 1.35rem; /* Tamaño moderado */
+  font-family: "Cinzel", serif;
+  font-size: 1.35rem;
 }
 
-/* Insignia del puntaje */
 .score-badge {
-  background: rgba(0, 0, 0, 0.26); /* Fondo oscuro semitransparente */
-  border: 1px solid rgba(212, 175, 55, 0.3); /* Borde dorado */
-  padding: 7px 12px; /* Espaciado */
-  border-radius: 999px; /* Forma tipo píldora */
-  color: var(--gold-soft); /* Texto dorado */
-  font-weight: 800; /* Muy marcado */
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.05); /* Brillo interno */
-  font-size: 0.92rem; /* Tamaño del texto */
+  background: rgba(0, 0, 0, 0.26);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  padding: 7px 12px;
+  border-radius: 999px;
+  color: var(--gold-soft);
+  font-weight: 800;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+  font-size: 0.92rem;
 }
 
-/* Contenedor de cartas */
 .cards {
-  display: flex; /* Cartas en fila */
-  flex-wrap: wrap; /* Permite varias filas */
-  justify-content: center; /* Centra las cartas */
-  gap: 12px; /* Espacio entre cartas */
-  min-height: 120px; /* Altura mínima */
-  padding: 8px 4px; /* Espaciado interno */
-  width: 100%; /* Ancho completo */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  min-height: 120px;
+  padding: 8px 4px;
+  width: 100%;
 }
 
-/* Línea divisoria entre dealer y jugador */
 .table-divider {
-  width: 72%; /* Ancho relativo */
-  height: 2px; /* Grosor */
-  margin: 14px auto; /* Centrada con margen vertical */
-  background: linear-gradient(90deg, transparent, rgba(243, 214, 122, 0.8), transparent); /* Línea degradada */
-  box-shadow: 0 0 12px rgba(243, 214, 122, 0.28); /* Brillo */
+  width: 72%;
+  height: 2px;
+  margin: 14px auto;
+  background: linear-gradient(90deg, transparent, rgba(243, 214, 122, 0.8), transparent);
+  box-shadow: 0 0 12px rgba(243, 214, 122, 0.28);
 }
 
-/* Estilo base de una carta */
 .card {
-  width: 82px; /* Ancho */
-  height: 118px; /* Alto */
-  background: linear-gradient(180deg, #ffffff, #f2f2f2); /* Fondo blanco con degradado */
-  border-radius: 12px; /* Bordes redondeados */
-  border: 2px solid #e1e1e1; /* Borde claro */
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35); /* Sombra */
-  position: relative; /* Para texto en esquinas */
-  display: flex; /* Flexbox */
-  justify-content: center; /* Centra contenido horizontalmente */
-  align-items: center; /* Centra contenido verticalmente */
-  font-family: "Georgia", serif; /* Fuente clásica de carta */
-  font-size: 1.65rem; /* Tamaño del símbolo central */
-  font-weight: bold; /* Negrita */
-  color: #111; /* Color oscuro */
-  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease; /* Efectos suaves */
+  width: 82px;
+  height: 118px;
+  background: linear-gradient(180deg, #ffffff, #f2f2f2);
+  border-radius: 12px;
+  border: 2px solid #e1e1e1;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Georgia", serif;
+  font-size: 1.65rem;
+  font-weight: bold;
+  color: #111;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
 }
 
-/* Efecto hover de las cartas */
 .card:hover {
-  transform: translateY(-6px) scale(1.02); /* Se eleva ligeramente */
-  box-shadow: 0 16px 28px rgba(0, 0, 0, 0.4); /* Más sombra */
-  filter: brightness(1.03); /* Ligero brillo */
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 16px 28px rgba(0, 0, 0, 0.4);
+  filter: brightness(1.03);
 }
 
-/* Carta roja para corazones o diamantes */
 .card.red {
-  color: #b3132b; /* Rojo oscuro */
+  color: #b3132b;
 }
 
-/* Texto superior de la carta */
 .card::before {
-  content: attr(data-top); /* Muestra valor desde atributo data-top */
-  position: absolute; /* Posición fija dentro de la carta */
-  top: 8px; /* Distancia superior */
-  left: 10px; /* Distancia izquierda */
-  font-size: 0.9rem; /* Tamaño pequeño */
-  font-weight: 700; /* Negrita */
-}
-
-/* Texto inferior invertido de la carta */
-.card::after {
-  content: attr(data-bottom); /* Muestra valor desde atributo data-bottom */
-  position: absolute; /* Posición absoluta */
-  bottom: 8px; /* Distancia inferior */
-  right: 10px; /* Distancia derecha */
-  font-size: 0.9rem; /* Tamaño pequeño */
-  font-weight: 700; /* Negrita */
-  transform: rotate(180deg); /* Lo gira para estilo real de carta */
-}
-
-/* Parte trasera de la carta */
-.card.back {
-  background:
-    linear-gradient(135deg, rgba(255,255,255,0.08), transparent), /* Reflejo */
-    repeating-linear-gradient(
-      45deg,
-      #102a43,
-      #102a43 10px,
-      #1f4e79 10px,
-      #1f4e79 20px
-    ); /* Patrón repetido azul */
-  border: 2px solid #d9c17a; /* Borde dorado */
-  color: transparent; /* Oculta texto central */
-  overflow: hidden; /* Oculta sobrantes */
-}
-
-/* Oculta textos de esquina cuando la carta está boca abajo */
-.card.back::before,
-.card.back::after {
-  content: "";
-}
-
-/* Patrón decorativo dentro del reverso */
-.card.back .card-pattern {
-  position: absolute; /* Posición interna */
-  inset: 10px; /* Margen interior */
-  border: 2px solid rgba(255,255,255,0.4); /* Borde claro */
-  border-radius: 8px; /* Redondeado */
-}
-
-/* Clase para animación al repartir */
-.card.dealing {
-  animation: dealIn 0.58s cubic-bezier(.18,.89,.32,1.28); /* Animación de entrada */
-  transform-origin: center top; /* Punto de origen del movimiento */
-}
-
-/* Animación de repartir carta */
-@keyframes dealIn {
-  0% {
-    opacity: 0; /* Invisible */
-    transform: translateY(-190px) scale(0.45) rotate(-15deg); /* Viene desde arriba, pequeña e inclinada */
-    filter: blur(4px); /* Borrosa al inicio */
-  }
-  70% {
-    opacity: 1; /* Visible */
-    transform: translateY(10px) scale(1.04) rotate(2deg); /* Rebote leve */
-    filter: blur(0); /* Nítida */
-  }
-  100% {
-    opacity: 1; /* Totalmente visible */
-    transform: translateY(0) scale(1) rotate(0deg); /* Posición final */
-  }
-}
-
-/* Frente de carta roja */
-.card-front.red {
-  color: #b3132b; /* Rojo para palos rojos */
-}
-
-/* Texto superior del frente */
-.card-front::before {
-  content: attr(data-top); /* Obtiene contenido del atributo */
+  content: attr(data-top);
   position: absolute;
   top: 8px;
   left: 10px;
@@ -510,134 +385,193 @@ body {
   font-weight: 700;
 }
 
-/* Texto inferior del frente */
-.card-front::after {
-  content: attr(data-bottom); /* Obtiene valor inferior */
+.card::after {
+  content: attr(data-bottom);
   position: absolute;
   bottom: 8px;
   right: 10px;
   font-size: 0.9rem;
   font-weight: 700;
-  transform: rotate(180deg); /* Invertido como carta real */
+  transform: rotate(180deg);
 }
 
-/* Patrón general decorativo */
+.card.back {
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.08), transparent),
+    repeating-linear-gradient(
+      45deg,
+      #102a43,
+      #102a43 10px,
+      #1f4e79 10px,
+      #1f4e79 20px
+    );
+  border: 2px solid #d9c17a;
+  color: transparent;
+  overflow: hidden;
+}
+
+.card.back::before,
+.card.back::after {
+  content: "";
+}
+
+.card.back .card-pattern {
+  position: absolute;
+  inset: 10px;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-radius: 8px;
+}
+
+.card.dealing {
+  animation: dealIn 0.58s cubic-bezier(.18,.89,.32,1.28);
+  transform-origin: center top;
+}
+
+@keyframes dealIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-190px) scale(0.45) rotate(-15deg);
+    filter: blur(4px);
+  }
+  70% {
+    opacity: 1;
+    transform: translateY(10px) scale(1.04) rotate(2deg);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+}
+
+.card-front.red {
+  color: #b3132b;
+}
+
+.card-front::before {
+  content: attr(data-top);
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.card-front::after {
+  content: attr(data-bottom);
+  position: absolute;
+  bottom: 8px;
+  right: 10px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  transform: rotate(180deg);
+}
+
 .card-pattern {
-  position: absolute; /* Posición absoluta */
-  inset: 10px; /* Espacio interior */
-  border: 2px solid rgba(255,255,255,0.4); /* Borde tenue */
-  border-radius: 8px; /* Bordes suaves */
+  position: absolute;
+  inset: 10px;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-radius: 8px;
 }
 
-/* Panel de botones principales */
 .controls-panel {
-  display: flex; /* Botones alineados */
-  justify-content: center; /* Centra horizontalmente */
-  gap: 12px; /* Espaciado */
-  flex-wrap: wrap; /* Permite salto de línea */
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
-/* Botones de casino y menú */
 .casino-btn,
 .menu-btn {
-  min-width: 150px; /* Ancho mínimo */
-  padding: 12px 18px; /* Espaciado interno */
-  border: none; /* Sin borde nativo */
-  border-radius: 14px; /* Bordes redondeados */
-  cursor: pointer; /* Cursor clicable */
-  font-size: 0.95rem; /* Tamaño de texto */
-  font-weight: 800; /* Negrita */
-  letter-spacing: 0.4px; /* Separación sutil */
-  transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease; /* Efectos */
-  box-shadow: var(--shadow-soft); /* Sombra */
-  text-transform: uppercase; /* Texto en mayúsculas */
+  min-width: 150px;
+  padding: 12px 18px;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+  box-shadow: var(--shadow-soft);
+  text-transform: uppercase;
 }
 
-/* Hover de botones activos */
 .casino-btn:hover:not(:disabled),
 .menu-btn:hover {
-  transform: translateY(-3px) scale(1.02); /* Se elevan ligeramente */
+  transform: translateY(-3px) scale(1.02);
 }
 
-/* Estado deshabilitado de botones y fichas */
 .casino-btn:disabled,
 .secondary-btn:disabled,
 .bet-chip:disabled {
-  opacity: 0.45; /* Se ven apagados */
-  cursor: not-allowed; /* Cursor de no permitido */
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
-/* Botón dorado y botón del menú */
 .gold-btn,
 .menu-btn {
-  background: linear-gradient(180deg, #ffe08a, #c99b18); /* Degradado dorado */
-  color: #2b2008; /* Texto oscuro */
+  background: linear-gradient(180deg, #ffe08a, #c99b18);
+  color: #2b2008;
 }
 
-/* Botón verde */
 .green-btn {
-  background: linear-gradient(180deg, #37b26c, #19663b); /* Degradado verde */
-  color: white; /* Texto blanco */
+  background: linear-gradient(180deg, #37b26c, #19663b);
+  color: white;
 }
 
-/* Botón rojo */
 .red-btn {
-  background: linear-gradient(180deg, #d14a4a, #7c1717); /* Degradado rojo */
-  color: white; /* Texto blanco */
+  background: linear-gradient(180deg, #d14a4a, #7c1717);
+  color: white;
 }
 
 /* MENU */
 .start-screen {
-  position: fixed; /* Pantalla completa fija */
-  inset: 0; /* Cubre todo */
+  position: fixed;
+  inset: 0;
   background:
-    radial-gradient(circle at top, rgba(212, 175, 55, 0.14), transparent 25%), /* Resplandor superior */
-    linear-gradient(180deg, rgba(5, 11, 8, 0.82), rgba(2, 6, 4, 0.95)); /* Fondo oscuro */
-  display: flex; /* Centrado con flex */
-  align-items: center; /* Centra verticalmente */
-  justify-content: center; /* Centra horizontalmente */
-  z-index: 20; /* Por encima del juego */
-  opacity: 0; /* Oculto inicialmente */
-  pointer-events: none; /* No interactúa cuando está oculto */
-  transition: opacity 0.5s ease; /* Transición de aparición */
-  backdrop-filter: blur(6px); /* Desenfoque del fondo */
+    radial-gradient(circle at top, rgba(212, 175, 55, 0.14), transparent 25%),
+    linear-gradient(180deg, rgba(5, 11, 8, 0.82), rgba(2, 6, 4, 0.95));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+  backdrop-filter: blur(6px);
 }
 
-/* Estado activo del menú */
 .start-screen.active {
-  opacity: 1; /* Visible */
-  pointer-events: all; /* Se puede interactuar */
+  opacity: 1;
+  pointer-events: all;
 }
 
-/* Ruido visual del fondo del menú */
 .start-noise {
-  position: absolute; /* Fondo absoluto */
-  inset: 0; /* Cubre todo */
-  opacity: 0.06; /* Muy tenue */
+  position: absolute;
+  inset: 0;
+  opacity: 0.06;
   background-image:
-    linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px), /* Líneas horizontales */
-    linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px); /* Líneas verticales */
-  background-size: 4px 4px, 4px 4px; /* Tamaño del patrón */
-  pointer-events: none; /* Solo decorativo */
+    linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+  background-size: 4px 4px, 4px 4px;
+  pointer-events: none;
 }
 
-/* Tarjeta central del menú */
 .start-card {
-  width: min(92%, 600px); /* Se adapta pero no supera 600px */
+  width: min(92%, 600px);
   background:
-    radial-gradient(circle at 50% 15%, rgba(255,255,255,0.05), transparent 30%), /* Luz superior */
-    linear-gradient(180deg, rgba(20, 34, 26, 0.96), rgba(8, 18, 12, 0.97)); /* Fondo verde oscuro */
-  border: 1px solid rgba(212, 175, 55, 0.24); /* Borde dorado */
-  border-radius: 30px; /* Bordes suaves */
-  padding: 42px 30px; /* Espaciado interno */
-  text-align: center; /* Centra contenido */
-  box-shadow: 0 24px 60px rgba(0,0,0,0.5); /* Sombra fuerte */
-  animation: menuFloat 3.5s ease-in-out infinite; /* Flotación continua */
-  position: relative; /* Para decoraciones */
-  overflow: hidden; /* Oculta exceso */
+    radial-gradient(circle at 50% 15%, rgba(255,255,255,0.05), transparent 30%),
+    linear-gradient(180deg, rgba(20, 34, 26, 0.96), rgba(8, 18, 12, 0.97));
+  border: 1px solid rgba(212, 175, 55, 0.24);
+  border-radius: 30px;
+  padding: 42px 30px;
+  text-align: center;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+  animation: menuFloat 3.5s ease-in-out infinite;
+  position: relative;
+  overflow: hidden;
 }
 
-/* Brillo diagonal decorativo sobre la tarjeta */
 .start-card::before {
   content: "";
   position: absolute;
@@ -645,111 +579,96 @@ body {
   left: -20%;
   width: 140%;
   height: 180px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent); /* Cinta de brillo */
-  transform: rotate(-8deg); /* Ligera inclinación */
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+  transform: rotate(-8deg);
 }
 
-/* Animación flotante del menú */
 @keyframes menuFloat {
-  0%, 100% { transform: translateY(0px); } /* Posición base */
-  50% { transform: translateY(-6px); } /* Sube levemente */
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
 }
 
-/* Texto pequeño superior del menú */
 .start-kicker {
-  color: var(--gold); /* Dorado */
-  text-transform: uppercase; /* Mayúsculas */
-  letter-spacing: 4px; /* Espaciado amplio */
-  font-size: 0.8rem; /* Tamaño pequeño */
-  margin-bottom: 14px; /* Separación inferior */
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  font-size: 0.8rem;
+  margin-bottom: 14px;
 }
 
-/* Título grande del menú */
 .start-card h1 {
-  font-family: "Cinzel", serif; /* Fuente temática */
-  font-size: 4.2rem; /* Muy grande */
-  color: var(--gold-bright); /* Dorado brillante */
-  margin-bottom: 12px; /* Espacio inferior */
+  font-family: "Cinzel", serif;
+  font-size: 4.2rem;
+  color: var(--gold-bright);
+  margin-bottom: 12px;
   text-shadow:
     0 0 16px rgba(212, 175, 55, 0.2),
-    0 0 34px rgba(212, 175, 55, 0.12); /* Resplandor */
+    0 0 34px rgba(212, 175, 55, 0.12);
 }
 
-/* Subtítulo del menú */
 .start-subtitle {
-  color: var(--text-muted); /* Texto tenue */
-  max-width: 430px; /* Limita ancho */
-  margin: 0 auto 26px; /* Centrado con margen inferior */
-  line-height: 1.6; /* Altura de línea */
+  color: var(--text-muted);
+  max-width: 430px;
+  margin: 0 auto 26px;
+  line-height: 1.6;
 }
 
-/* Contenedor de fichas decorativas del menú */
 .hero-chips {
-  display: flex; /* En línea */
-  justify-content: center; /* Centradas */
-  gap: 16px; /* Espacio entre ellas */
-  margin-bottom: 24px; /* Separación inferior */
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 24px;
 }
 
-/* Estilo base de ficha decorativa */
 .chip {
-  width: 52px; /* Ancho */
-  height: 52px; /* Alto */
-  border-radius: 50%; /* Circular */
-  display: inline-block; /* Elemento en línea-bloque */
-  box-shadow: inset 0 0 0 6px rgba(255,255,255,0.14), var(--shadow-soft); /* Interior y sombra */
-  border: 2px solid rgba(255,255,255,0.15); /* Borde suave */
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: inset 0 0 0 6px rgba(255,255,255,0.14), var(--shadow-soft);
+  border: 2px solid rgba(255,255,255,0.15);
 }
 
-/* Variante grande de ficha */
 .chip.large {
   width: 64px;
   height: 64px;
 }
 
-/* Ficha roja */
 .chip-red {
   background: radial-gradient(circle at 30% 30%, #ff8b8b, #8b1010 70%);
 }
 
-/* Ficha negra */
 .chip-black {
   background: radial-gradient(circle at 30% 30%, #646464, #111 70%);
 }
 
-/* Ficha dorada */
 .chip-gold {
   background: radial-gradient(circle at 30% 30%, #ffe9a3, #a67c00 75%);
 }
 
-/* Línea brillante decorativa en el menú */
 .menu-glow-line {
-  width: 80%; /* Ancho relativo */
-  height: 2px; /* Altura fina */
-  margin: 0 auto 24px; /* Centrada */
-  background: linear-gradient(90deg, transparent, rgba(243, 214, 122, 0.9), transparent); /* Brillo lineal */
-  box-shadow: 0 0 14px rgba(243, 214, 122, 0.34); /* Halo */
+  width: 80%;
+  height: 2px;
+  margin: 0 auto 24px;
+  background: linear-gradient(90deg, transparent, rgba(243, 214, 122, 0.9), transparent);
+  box-shadow: 0 0 14px rgba(243, 214, 122, 0.34);
 }
 
-/* Capa para explosión visual de resultado */
 .result-burst {
-  position: absolute; /* Ocupa sobre la mesa */
-  inset: 0; /* Cubre todo */
-  pointer-events: none; /* No interactiva */
-  opacity: 0; /* Oculta inicialmente */
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
 }
 
-/* Estado de explosión de victoria */
 .result-burst.show-win {
-  animation: burstWin 0.9s ease; /* Ejecuta animación verde */
+  animation: burstWin 0.9s ease;
 }
 
-/* Estado de explosión de derrota */
 .result-burst.show-lose {
-  animation: burstLose 0.9s ease; /* Ejecuta animación roja */
+  animation: burstLose 0.9s ease;
 }
 
-/* Animación de victoria */
 @keyframes burstWin {
   0% {
     opacity: 0;
@@ -765,7 +684,6 @@ body {
   }
 }
 
-/* Animación de derrota */
 @keyframes burstLose {
   0% {
     opacity: 0;
@@ -781,110 +699,103 @@ body {
   }
 }
 
-/* Clase de brillo temporal al ganar */
 .flash-win {
   animation: resultGlowWin 0.8s ease;
 }
 
-/* Clase de brillo temporal al perder */
 .flash-lose {
   animation: resultGlowLose 0.8s ease;
 }
 
-/* Resplandor verde de victoria */
 @keyframes resultGlowWin {
   0% { box-shadow: inset 0 0 0 rgba(0,0,0,0); }
   50% { box-shadow: inset 0 0 90px rgba(67, 199, 112, 0.18); }
   100% { box-shadow: inset 0 0 0 rgba(0,0,0,0); }
 }
 
-/* Resplandor rojo de derrota */
 @keyframes resultGlowLose {
   0% { box-shadow: inset 0 0 0 rgba(0,0,0,0); }
   50% { box-shadow: inset 0 0 90px rgba(209, 74, 74, 0.18); }
   100% { box-shadow: inset 0 0 0 rgba(0,0,0,0); }
 }
 
-/* Si la pantalla es alta, se evita scroll vertical */
 @media (min-height: 760px) {
   body {
     overflow-y: hidden;
   }
 }
 
-/* Si la pantalla es baja, se permite scroll vertical */
 @media (max-height: 759px) {
   body {
     overflow-y: auto;
   }
 }
 
-/* Ajustes responsivos para pantallas pequeñas */
 @media (max-width: 768px) {
   body {
-    overflow-y: auto; /* Permite scroll en móvil */
+    overflow-y: auto;
   }
 
   .game-shell {
-    min-height: auto; /* Ya no fuerza altura completa */
-    padding: 16px 14px 20px; /* Ajuste de padding */
+    min-height: auto;
+    padding: 16px 14px 20px;
   }
 
   .top-bar {
-    align-items: flex-start; /* Alineación superior */
-    margin-bottom: 14px; /* Más espacio inferior */
+    align-items: flex-start;
+    margin-bottom: 14px;
   }
 
   .brand-block h1 {
-    font-size: 1.8rem; /* Reduce tamaño del título */
+    font-size: 1.8rem;
   }
 
   .subtitle {
-    font-size: 0.88rem; /* Subtítulo más pequeño */
+    font-size: 0.88rem;
   }
 
   .hud-box {
-    min-width: 120px; /* Caja HUD más compacta */
+    min-width: 120px;
     padding: 9px 12px;
   }
 
   .betting-panel {
-    padding: 12px 12px; /* Ajuste del panel de apuestas */
+    padding: 12px 12px;
   }
 
   .table-area {
-    display: block; /* Cambia a bloque */
-    flex: unset; /* Quita comportamiento flex */
+    display: block;
+    flex: unset;
   }
 
   .table-ring {
-    display: block; /* Se comporta como bloque */
-    padding: 8px; /* Reduce padding */
-    border-radius: 24px; /* Menos redondeado */
+    display: block;
+    padding: 8px;
+    border-radius: 24px;
   }
 
   .table-surface {
-    min-height: auto; /* Se adapta al contenido */
-    height: auto; /* Altura automática */
-    padding: 18px 12px 14px; /* Menos padding */
-    border-radius: 20px; /* Menos redondeado */
+    min-height: auto;
+    height: auto;
+    padding: 18px 12px 14px;
+    border-radius: 20px;
   }
 
   .table-center-mark {
-    font-size: 2rem; /* Reduce texto decorativo */
+    font-size: 2rem;
   }
 
   .section h2 {
-    font-size: 1.15rem; /* Reduce título de secciones */
+    font-size: 1.15rem;
   }
 
   .cards {
-    gap: 10px; /* Menos espacio entre cartas */
-    min-height: 100px; /* Reduce altura mínima */
+    gap: 10px;
+    min-height: 100px;
   }
 
   .card {
-    width: 72px; /* Carta más pequeña */
+    width: 72px;
     height: 104px;
     font-size: 1.35rem;
   }
@@ -893,116 +804,106 @@ body {
   .card::after,
   .card-front::before,
   .card-front::after {
-    font-size: 0.78rem; /* Reduce texto de esquinas */
+    font-size: 0.78rem;
   }
 
   .table-divider {
-    width: 82%; /* Más ancha en móvil */
+    width: 82%;
     margin: 12px auto;
   }
 
   .bet-chip {
-    width: 56px; /* Fichas más pequeñas */
+    width: 56px;
     height: 56px;
     font-size: 0.82rem;
   }
 
   .casino-btn,
   .menu-btn {
-    min-width: 130px; /* Botones más compactos */
+    min-width: 130px;
     padding: 11px 15px;
     font-size: 0.88rem;
   }
 
   .start-card h1 {
-    font-size: 3rem; /* Título del menú más pequeño */
+    font-size: 3rem;
   }
 }
 
 /* POPUP GLOBAL */
 .result-popup {
-  position: fixed; /* Fijo en toda la pantalla */
-  inset: 0; /* Ocupa todo */
-  z-index: 9999; /* Muy por encima de todo */
-  display: flex; /* Flex para centrar */
-  align-items: center; /* Centrado vertical */
-  justify-content: center; /* Centrado horizontal */
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* Oculta el popup */
 .result-popup.hidden {
   display: none;
 }
 
-/* Fondo oscuro detrás del popup */
 .result-popup-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.58); /* Oscurece el fondo */
-  backdrop-filter: blur(5px); /* Desenfoque */
+  background: rgba(0, 0, 0, 0.58);
+  backdrop-filter: blur(5px);
 }
 
-/* Tarjeta principal del popup */
 .result-popup-card {
-  position: relative; /* Encima del backdrop */
-  z-index: 2; /* Sobre el fondo */
-  width: min(92%, 420px); /* Tamaño adaptable */
-  padding: 28px 24px; /* Espaciado interno */
-  border-radius: 24px; /* Bordes redondos */
-  text-align: center; /* Texto centrado */
+  position: relative;
+  z-index: 2;
+  width: min(92%, 420px);
+  padding: 28px 24px;
+  border-radius: 24px;
+  text-align: center;
   background:
-    radial-gradient(circle at top, rgba(255,255,255,0.06), transparent 35%), /* Luz superior */
-    linear-gradient(180deg, rgba(20, 34, 26, 0.98), rgba(8, 18, 12, 0.98)); /* Fondo oscuro */
-  border: 1px solid rgba(212, 175, 55, 0.28); /* Borde dorado */
-  box-shadow: 0 24px 60px rgba(0,0,0,0.45); /* Sombra fuerte */
-  animation: popupIn 0.28s ease; /* Animación de entrada */
+    radial-gradient(circle at top, rgba(255,255,255,0.06), transparent 35%),
+    linear-gradient(180deg, rgba(20, 34, 26, 0.98), rgba(8, 18, 12, 0.98));
+  border: 1px solid rgba(212, 175, 55, 0.28);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.45);
+  animation: popupIn 0.28s ease;
 }
 
-/* Título del popup */
 .result-popup-card h2 {
-  font-family: "Cinzel", serif; /* Fuente temática */
-  font-size: 2rem; /* Tamaño grande */
-  margin-bottom: 12px; /* Espacio inferior */
-  color: var(--gold-bright); /* Dorado brillante */
+  font-family: "Cinzel", serif;
+  font-size: 2rem;
+  margin-bottom: 12px;
+  color: var(--gold-bright);
 }
 
-/* Texto del popup */
 .result-popup-card p {
-  font-size: 1.05rem; /* Texto legible */
-  line-height: 1.5; /* Altura de línea */
-  color: var(--cream); /* Texto claro */
-  margin-bottom: 20px; /* Separación inferior */
+  font-size: 1.05rem;
+  line-height: 1.5;
+  color: var(--cream);
+  margin-bottom: 20px;
 }
 
-/* Contenedor de acciones del popup */
 .popup-actions {
-  display: flex; /* Flex */
-  justify-content: center; /* Centra botones */
+  display: flex;
+  justify-content: center;
 }
 
-/* Sombra extra cuando el popup es de victoria */
 .result-popup.win .result-popup-card {
   box-shadow: 0 24px 60px rgba(0,0,0,0.45), 0 0 28px rgba(57, 179, 107, 0.18);
 }
 
-/* Sombra extra cuando el popup es de derrota */
 .result-popup.lose .result-popup-card {
   box-shadow: 0 24px 60px rgba(0,0,0,0.45), 0 0 28px rgba(198, 63, 63, 0.18);
 }
 
-/* Sombra extra cuando el popup es de empate */
 .result-popup.draw .result-popup-card {
   box-shadow: 0 24px 60px rgba(0,0,0,0.45), 0 0 28px rgba(243, 214, 122, 0.15);
 }
 
-/* Animación de aparición del popup */
 @keyframes popupIn {
   0% {
-    opacity: 0; /* Inicialmente invisible */
-    transform: scale(0.88) translateY(16px); /* Pequeño y abajo */
+    opacity: 0;
+    transform: scale(0.88) translateY(16px);
   }
   100% {
-    opacity: 1; /* Visible */
-    transform: scale(1) translateY(0); /* Tamaño y posición final */
+    opacity: 1;
+    transform: scale(1) translateY(0);
   }
 }
