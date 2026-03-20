@@ -171,16 +171,19 @@ function playChipSound() {
 }
 
 
+// Crea una carta visual en el HTML
 function createCardElement(card, options = {}) {
   const { hidden = false, animate = false } = options;
 
   const cardEl = document.createElement("div");
   cardEl.classList.add("card");
 
+  // Animación al repartir
   if (animate) {
     cardEl.classList.add("dealing");
   }
 
+  // Carta boca abajo
   if (hidden) {
     cardEl.classList.add("back");
 
@@ -191,10 +194,12 @@ function createCardElement(card, options = {}) {
     return cardEl;
   }
 
+  // Color rojo para corazones y diamantes
   if (card.suit === "♥" || card.suit === "♦") {
     cardEl.classList.add("red");
   }
 
+  // Contenido de la carta
   cardEl.setAttribute("data-top", `${card.value}${card.suit}`);
   cardEl.setAttribute("data-bottom", `${card.value}${card.suit}`);
   cardEl.textContent = `${card.value}${card.suit}`;
@@ -202,6 +207,7 @@ function createCardElement(card, options = {}) {
   return cardEl;
 }
 
+// Limpia la mesa y reinicia puntajes visuales
 function clearBoard() {
   dealerCardsEl.innerHTML = "";
   playerCardsEl.innerHTML = "";
@@ -211,25 +217,30 @@ function clearBoard() {
   hiddenDealerCard = null;
 }
 
+// Actualiza los puntajes en pantalla
 function updateScores(showDealerFull = false) {
   const playerScore = calculateScore(playerHand);
   playerScoreEl.textContent = `Puntaje: ${playerScore}`;
 
   if (showDealerFull) {
+    // Muestra todo el puntaje del dealer
     const dealerScore = calculateScore(dealerHand);
     dealerScoreEl.textContent = `Puntaje: ${dealerScore}`;
   } else {
+    // Solo muestra la primera carta del dealer
     const visibleScore = dealerHand.length > 0 ? getCardNumericValue(dealerHand[0]) : 0;
     dealerScoreEl.textContent = `Puntaje: ${visibleScore}`;
   }
 }
 
+// Toma una carta del deck
 function dealCard(hand) {
   const card = deck.pop();
   hand.push(card);
   return card;
 }
 
+// Agrega carta al HTML con animación
 function appendCardToUI(container, card, hidden = false) {
   const cardEl = createCardElement(card, { hidden, animate: true });
   container.appendChild(cardEl);
@@ -237,6 +248,7 @@ function appendCardToUI(container, card, hidden = false) {
   return cardEl;
 }
 
+// Revela la carta oculta del dealer
 async function revealHiddenDealerCard() {
   if (!hiddenDealerCardElement || !hiddenDealerCard) return;
 
@@ -252,27 +264,32 @@ async function revealHiddenDealerCard() {
   await wait(450);
 }
 
+// Secuencia inicial de reparto
 async function initialDealSequence() {
   clearBoard();
   updateScores(false);
 
   let card;
 
+  // Jugador
   card = dealCard(playerHand);
-  appendCardToUI(playerCardsEl, card, false);
+  appendCardToUI(playerCardsEl, card);
   updateScores(false);
   await wait(340);
 
+  // Dealer
   card = dealCard(dealerHand);
-  appendCardToUI(dealerCardsEl, card, false);
+  appendCardToUI(dealerCardsEl, card);
   updateScores(false);
   await wait(340);
 
+  // Jugador
   card = dealCard(playerHand);
-  appendCardToUI(playerCardsEl, card, false);
+  appendCardToUI(playerCardsEl, card);
   updateScores(false);
   await wait(340);
 
+  // Dealer (oculta)
   card = dealCard(dealerHand);
   hiddenDealerCard = card;
   hiddenDealerCardElement = appendCardToUI(dealerCardsEl, card, true);
@@ -280,6 +297,7 @@ async function initialDealSequence() {
   await wait(360);
 }
 
+// Agrega fichas a la apuesta
 function addToBet(amount) {
   if (roundInProgress) {
     setMessage("No puedes modificar la apuesta durante la ronda.", "lose");
@@ -287,7 +305,7 @@ function addToBet(amount) {
   }
 
   if (balance < amount) {
-    setMessage("No tienes saldo suficiente para esa ficha.", "lose");
+    setMessage("No tienes saldo suficiente.", "lose");
     return;
   }
 
@@ -298,9 +316,10 @@ function addToBet(amount) {
   setMessage(`Apuesta actual: $${currentBet}`);
 }
 
+// Limpia la apuesta
 function clearBet() {
   if (roundInProgress) {
-    setMessage("No puedes limpiar la apuesta en medio de una ronda.", "lose");
+    setMessage("No puedes limpiar la apuesta en medio de la ronda.", "lose");
     return;
   }
 
@@ -310,17 +329,19 @@ function clearBet() {
   setMessage("Apuesta reiniciada.");
 }
 
-
+// Desactiva botones de juego
 function disableRoundButtons() {
   hitBtn.disabled = true;
   standBtn.disabled = true;
 }
 
+// Activa botones de juego
 function enableRoundButtons() {
   hitBtn.disabled = false;
   standBtn.disabled = false;
 }
 
+// Activa/desactiva apuestas
 function setBettingEnabled(enabled) {
   betChipButtons.forEach(btn => {
     btn.disabled = !enabled;
@@ -333,6 +354,7 @@ function setBettingEnabled(enabled) {
   clearBetBtn.style.cursor = enabled ? "pointer" : "not-allowed";
 }
 
+// Verifica si hay Blackjack al inicio
 function checkBlackjack() {
   const playerScore = calculateScore(playerHand);
   const dealerScore = calculateScore(dealerHand);
@@ -355,21 +377,26 @@ function checkBlackjack() {
   return false;
 }
 
+// Inicia una nueva partida
 async function startNewGame() {
   if (roundInProgress) return;
 
   hideResultPopup();
 
+  // Verifica que haya apuesta
   if (currentBet <= 0) {
-    setMessage("Primero debes apostar fichas para comenzar.", "lose");
+    setMessage("Primero debes apostar.", "lose");
     return;
   }
 
   roundInProgress = true;
   gameOver = false;
+
+  // Bloquea apuestas y botones
   setBettingEnabled(false);
   disableRoundButtons();
 
+  // Reinicia baraja y manos
   deck = createDeck();
   shuffleDeck(deck);
   playerHand = [];
@@ -378,9 +405,10 @@ async function startNewGame() {
   setMessage("Repartiendo cartas...");
   await initialDealSequence();
 
+  // Si no hay blackjack, turno del jugador
   if (!checkBlackjack()) {
     enableRoundButtons();
-    setMessage("Tu turno: pide una carta o plántate.");
+    setMessage("Tu turno: pide o plántate.");
   }
 }
 
