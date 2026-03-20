@@ -412,33 +412,40 @@ async function startNewGame() {
   }
 }
 
+// Acción: pedir carta
 async function playerHit() {
+  // Evita acciones si el juego terminó o no inició
   if (gameOver || !roundInProgress) return;
 
   disableRoundButtons();
 
+  // Reparte carta al jugador
   const card = dealCard(playerHand);
-  appendCardToUI(playerCardsEl, card, false);
+  appendCardToUI(playerCardsEl, card);
   updateScores(false);
 
   await wait(360);
 
   const playerScore = calculateScore(playerHand);
 
+  // Si se pasa de 21 pierde
   if (playerScore > 21) {
     endGame("Te pasaste de 21. Perdiste.", "lose");
     return;
   }
 
+  // Si llega a 21 automáticamente se planta
   if (playerScore === 21) {
     await playerStand();
     return;
   }
 
+  // Sigue turno del jugador
   enableRoundButtons();
   setMessage("Tu turno: pide una carta o plántate.");
 }
 
+// Acción: plantarse
 async function playerStand() {
   if (gameOver || !roundInProgress) return;
 
@@ -446,14 +453,17 @@ async function playerStand() {
   setMessage("Turno del dealer...");
 
   await wait(260);
+
+  // Revela carta oculta del dealer
   await revealHiddenDealerCard();
 
   let dealerScore = calculateScore(dealerHand);
 
+  // Dealer pide hasta tener mínimo 17
   while (dealerScore < 17) {
     await wait(430);
     const card = dealCard(dealerHand);
-    appendCardToUI(dealerCardsEl, card, false);
+    appendCardToUI(dealerCardsEl, card);
     updateScores(true);
     dealerScore = calculateScore(dealerHand);
   }
@@ -462,6 +472,7 @@ async function playerStand() {
   determineWinner();
 }
 
+// Determina quién gana
 function determineWinner() {
   const playerScore = calculateScore(playerHand);
   const dealerScore = calculateScore(dealerHand);
@@ -480,10 +491,10 @@ function determineWinner() {
   }
 }
 
-
+// Efecto visual en la mesa (ganar/perder)
 function triggerTableFlash(type) {
   tableSurface.classList.remove("flash-win", "flash-lose");
-  void tableSurface.offsetWidth;
+  void tableSurface.offsetWidth; // reinicia animación
 
   if (type === "win") {
     tableSurface.classList.add("flash-win");
@@ -492,6 +503,7 @@ function triggerTableFlash(type) {
   }
 }
 
+// Efecto de partículas (ganar/perder)
 function triggerBurst(type) {
   resultBurst.classList.remove("show-win", "show-lose");
   void resultBurst.offsetWidth;
@@ -503,23 +515,27 @@ function triggerBurst(type) {
   }
 }
 
+// Pago al ganar (multiplicador)
 function payWin(multiplier = 2) {
   balance += currentBet * multiplier;
   currentBet = 0;
   updateMoneyUI();
 }
 
+// Empate: devuelve apuesta
 function payPush() {
   balance += currentBet;
   currentBet = 0;
   updateMoneyUI();
 }
 
+// Pierde: pierde apuesta
 function loseBet() {
   currentBet = 0;
   updateMoneyUI();
 }
 
+// Revela carta del dealer sin animación (si quedó oculta)
 function revealDealerCardImmediatelyIfNeeded() {
   if (!hiddenDealerCardElement || !hiddenDealerCard) return;
 
@@ -530,11 +546,13 @@ function revealDealerCardImmediatelyIfNeeded() {
   hiddenDealerCard = null;
 }
 
+// Muestra popup de resultado
 function showResultPopup(message, resultType) {
   if (!resultPopup) return;
 
   resultPopup.classList.remove("hidden", "win", "lose", "draw");
 
+  // Configura título según resultado
   if (resultType === "blackjack") {
     resultPopup.classList.add("win");
     popupTitle.textContent = "¡Blackjack!";
@@ -552,6 +570,7 @@ function showResultPopup(message, resultType) {
   popupText.textContent = message;
 }
 
+// Oculta popup
 function hideResultPopup() {
   if (!resultPopup) return;
 
@@ -559,17 +578,21 @@ function hideResultPopup() {
   resultPopup.classList.remove("win", "lose", "draw");
 }
 
+// Finaliza la partida
 function endGame(message, resultType) {
   gameOver = true;
   roundInProgress = false;
+
   disableRoundButtons();
   setBettingEnabled(true);
 
+  // Revela carta del dealer y actualiza puntaje
   revealDealerCardImmediatelyIfNeeded();
   updateScores(true);
 
   const lower = message.toLowerCase();
 
+  // Resultado: Blackjack
   if (resultType === "blackjack") {
     setMessage("Ronda terminada.");
     payWin(2.5);
@@ -577,6 +600,8 @@ function endGame(message, resultType) {
     triggerBurst("win");
     playWinSound();
     showResultPopup(message, "blackjack");
+
+  // Resultado: Ganar
   } else if (resultType === "win" || lower.includes("ganaste")) {
     setMessage("Ronda terminada.");
     payWin(2);
@@ -584,10 +609,14 @@ function endGame(message, resultType) {
     triggerBurst("win");
     playWinSound();
     showResultPopup(message, "win");
+
+  // Resultado: Empate
   } else if (resultType === "draw" || lower.includes("empate")) {
     setMessage("Ronda terminada.");
     payPush();
     showResultPopup(message, "draw");
+
+  // Resultado: Perder
   } else {
     setMessage("Ronda terminada.");
     loseBet();
@@ -597,14 +626,17 @@ function endGame(message, resultType) {
     showResultPopup(message, "lose");
   }
 
+  // Caso sin dinero
   if (balance <= 0 && currentBet === 0) {
-    showResultPopup("Te quedaste sin saldo. Recarga el juego manualmente o reinicia el valor inicial.", "lose");
+    showResultPopup("Te quedaste sin saldo.", "lose");
   }
 }
 
-
+// Entra al juego desde pantalla inicial
 function enterGame() {
   const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+
+  // Activa audio si estaba pausado
   if (AudioContextClass && playBeep.ctx && playBeep.ctx.state === "suspended") {
     playBeep.ctx.resume();
   }
@@ -613,12 +645,14 @@ function enterGame() {
   setMessage('Selecciona fichas y presiona "Nueva partida".');
 }
 
+// Eventos de botones
 enterGameBtn.addEventListener("click", enterGame);
 newGameBtn.addEventListener("click", startNewGame);
 hitBtn.addEventListener("click", playerHit);
 standBtn.addEventListener("click", playerStand);
 clearBetBtn.addEventListener("click", clearBet);
 
+// Eventos de fichas
 betChipButtons.forEach(btn => {
   btn.addEventListener("click", () => {
     const value = Number(btn.dataset.value);
@@ -626,10 +660,12 @@ betChipButtons.forEach(btn => {
   });
 });
 
+// Botón cerrar popup
 if (popupCloseBtn) {
   popupCloseBtn.addEventListener("click", hideResultPopup);
 }
 
+// Estado inicial
 updateMoneyUI();
 setBettingEnabled(true);
 hideResultPopup();
