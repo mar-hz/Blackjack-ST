@@ -1,18 +1,23 @@
+// Palos y valores de las cartas
 const suits = ["♠", "♥", "♦", "♣"];
 const values = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
 
-let deck = [];
-let playerHand = [];
-let dealerHand = [];
-let gameOver = false;
+// Variables principales del juego
+let deck = [];            // Baraja
+let playerHand = [];      // Cartas del jugador
+let dealerHand = [];      // Cartas del dealer
+let gameOver = false;     
 let roundInProgress = false;
 
+// Dinero y apuesta
 let balance = 1000;
 let currentBet = 0;
 
+// Carta oculta del dealer
 let hiddenDealerCardElement = null;
 let hiddenDealerCard = null;
 
+// Elementos del DOM (UI)
 const dealerCardsEl = document.getElementById("dealer-cards");
 const playerCardsEl = document.getElementById("player-cards");
 const dealerScoreEl = document.getElementById("dealer-score");
@@ -22,29 +27,36 @@ const balanceDisplay = document.getElementById("balance-display");
 const betDisplay = document.getElementById("bet-display");
 const resultBurst = document.getElementById("result-burst");
 
+// Botones
 const newGameBtn = document.getElementById("new-game-btn");
 const hitBtn = document.getElementById("hit-btn");
 const standBtn = document.getElementById("stand-btn");
 const clearBetBtn = document.getElementById("clear-bet-btn");
 const enterGameBtn = document.getElementById("enter-game-btn");
+
+// Pantallas y mesa
 const startScreen = document.getElementById("start-screen");
 const tableSurface = document.getElementById("table-surface");
 const betChipButtons = document.querySelectorAll(".bet-chip");
 
+// Popup de resultados
 const resultPopup = document.getElementById("result-popup");
 const popupTitle = document.getElementById("popup-title");
 const popupText = document.getElementById("popup-text");
 const popupCloseBtn = document.getElementById("popup-close-btn");
 
+// Función para esperar (delay)
 function wait(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+// Actualiza el dinero en pantalla
 function updateMoneyUI() {
   balanceDisplay.textContent = `$${balance}`;
   betDisplay.textContent = `$${currentBet}`;
 }
 
+// Muestra mensajes con color según resultado
 function setMessage(text, type = "normal") {
   messageEl.textContent = text;
   messageEl.style.color =
@@ -54,6 +66,7 @@ function setMessage(text, type = "normal") {
     "#f8f3e7";
 }
 
+// Crea la baraja completa (52 cartas)
 function createDeck() {
   const newDeck = [];
 
@@ -66,6 +79,7 @@ function createDeck() {
   return newDeck;
 }
 
+// Mezcla la baraja (algoritmo Fisher-Yates)
 function shuffleDeck(deckToShuffle) {
   for (let i = deckToShuffle.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -73,12 +87,14 @@ function shuffleDeck(deckToShuffle) {
   }
 }
 
+// Convierte carta a valor numérico
 function getCardNumericValue(card) {
-  if (card.value === "A") return 11;
-  if (["J", "Q", "K"].includes(card.value)) return 10;
-  return parseInt(card.value, 10);
+  if (card.value === "A") return 11;         // As vale 11 (puede cambiar luego)
+  if (["J", "Q", "K"].includes(card.value)) return 10; // Figuras valen 10
+  return parseInt(card.value, 10);           // Número normal
 }
 
+// Calcula el puntaje de una mano
 function calculateScore(hand) {
   let score = 0;
   let aces = 0;
@@ -88,6 +104,7 @@ function calculateScore(hand) {
     if (card.value === "A") aces++;
   }
 
+  // Ajusta ases de 11 a 1 si se pasa de 21
   while (score > 21 && aces > 0) {
     score -= 10;
     aces--;
@@ -96,12 +113,12 @@ function calculateScore(hand) {
   return score;
 }
 
-
-
+// Genera sonidos usando Web Audio API
 function playBeep(frequency = 440, duration = 0.08, type = "triangle", volume = 0.03) {
   const AudioContextClass = window.AudioContext || window.webkitAudioContext;
   if (!AudioContextClass) return;
 
+  // Crea contexto una sola vez
   if (!playBeep.ctx) {
     playBeep.ctx = new AudioContextClass();
   }
@@ -123,31 +140,34 @@ function playBeep(frequency = 440, duration = 0.08, type = "triangle", volume = 
   gain.connect(ctx.destination);
 
   oscillator.start();
+
+  // Apaga sonido suavemente
   gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
   oscillator.stop(ctx.currentTime + duration);
 }
 
+// Sonidos específicos del juego
 function playDealSound() {
-  playBeep(520, 0.06, "triangle", 0.02);
+  playBeep(520, 0.06, "triangle", 0.02); // Repartir carta
 }
 
 function playFlipSound() {
-  playBeep(760, 0.08, "square", 0.025);
+  playBeep(760, 0.08, "square", 0.025); // Voltear carta
 }
 
 function playWinSound() {
-  playBeep(660, 0.09, "triangle", 0.03);
-  setTimeout(() => playBeep(880, 0.11, "triangle", 0.03), 90);
-  setTimeout(() => playBeep(1100, 0.15, "triangle", 0.03), 180);
+  playBeep(660, 0.09);
+  setTimeout(() => playBeep(880, 0.11), 90);
+  setTimeout(() => playBeep(1100, 0.15), 180); // Secuencia de victoria
 }
 
 function playLoseSound() {
-  playBeep(420, 0.12, "sawtooth", 0.025);
-  setTimeout(() => playBeep(300, 0.18, "sawtooth", 0.022), 120);
+  playBeep(420, 0.12, "sawtooth");
+  setTimeout(() => playBeep(300, 0.18, "sawtooth"), 120); // Secuencia de derrota
 }
 
 function playChipSound() {
-  playBeep(600, 0.04, "square", 0.018);
+  playBeep(600, 0.04, "square", 0.018); // Sonido de ficha
 }
 
 
