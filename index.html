@@ -103,7 +103,7 @@
 
           <div class="table-spotlight"></div>
           
-
+          <!-- Sección del dealer -->
           <div class="section dealer-section">
             <div class="section-header">
               <h2>Dealer</h2>
@@ -111,9 +111,9 @@
             </div>
             <div id="dealer-cards" class="cards"></div>
           </div>
-
+          <!-- Línea divisoria -->
           <div class="table-divider"></div>
-
+          <!-- Sección del jugador -->
           <div class="section player-section">
             <div class="section-header">
               <h2>Jugador</h2>
@@ -121,12 +121,13 @@
             </div>
             <div id="player-cards" class="cards"></div>
           </div>
-
+          <!-- Animación de resultado -->
           <div id="result-burst" class="result-burst"></div>
         </div>
       </div>
     </section>
 
+    <!-- Controles del juego -->
     <section class="controls-panel">
       <button id="new-game-btn" class="casino-btn gold-btn">Nueva partida</button>
       <button id="hit-btn" class="casino-btn green-btn" disabled>Pedir</button>
@@ -134,19 +135,20 @@
     </section>
   </main>
 
+  <!-- Popup de resultado -->
   <div id="result-popup" class="result-popup hidden">
     <div class="result-popup-backdrop"></div>
 
     <div class="result-popup-card">
       <h2 id="popup-title">Resultado</h2>
       <p id="popup-text">Ganaste la partida.</p>
-
+      <!-- Botón para cerrar -->
       <div class="popup-actions">
         <button id="popup-close-btn" class="casino-btn gold-btn">Cerrar</button>
       </div>
     </div>
   </div>
-
+  <!-- Lógica del juego -->
   <script src="script.js"></script>
 </body>
 </html>
