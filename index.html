@@ -1,135 +1,184 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <!-- configuración básica del documento -->
     <meta charset="UTF-8" />
+
+    <!-- hace que el diseño sea responsive en móviles -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- título de la página -->
     <title>Blackjack Casino</title>
 
+    <!-- conexión anticipada a fuentes externas -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- importación de fuentes -->
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
+    <!-- archivo de estilos -->
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+
+    <!-- fondo visual -->
     <div class="ambient-bg"></div>
+
+    <!-- partículas decorativas -->
     <div class="particles"></div>
 
+    <!-- pantalla inicial -->
     <div id="start-screen" class="start-screen active">
-    <div class="start-noise"></div>
+        <div class="start-noise"></div>
 
-    <div class="start-card">
-        <p class="start-kicker">High Stakes Table</p>
-        <h1>BLACKJACK</h1>
-        <p class="start-subtitle">
-        Apuesta tus fichas, siente la tensión de la mesa y juega una mano con estilo de casino.
-        </p>
+        <div class="start-card">
+            <!-- texto decorativo -->
+            <p class="start-kicker">High Stakes Table</p>
 
-        <div class="hero-chips">
-            <span class="chip chip-red large"></span>
-            <span class="chip chip-black large"></span>
-            <span class="chip chip-gold large"></span>
+            <!-- título principal -->
+            <h1>BLACKJACK</h1>
+
+            <!-- descripción -->
+            <p class="start-subtitle">
+                apuesta tus fichas, siente la tensión de la mesa y juega una mano con estilo de casino.
+            </p>
+
+            <!-- fichas visuales -->
+            <div class="hero-chips">
+                <span class="chip chip-red large"></span>
+                <span class="chip chip-black large"></span>
+                <span class="chip chip-gold large"></span>
+            </div>
+
+            <!-- línea decorativa -->
+            <div class="menu-glow-line"></div>
+
+            <!-- botón de inicio -->
+            <button id="enter-game-btn" class="menu-btn">Entrar a la mesa</button>
         </div>
-
-    <div class="menu-glow-line"></div>
-
-    <button id="enter-game-btn" class="menu-btn">Entrar a la mesa</button>
     </div>
-</div>
 
+    <!-- contenedor principal -->
     <main class="game-shell">
-    <header class="top-bar">
-        <div class="brand-block">
-            <p class="mini-label">Mesa Premium</p>
-            <h1>Blackjack Casino</h1>
-            <p class="subtitle">Una mano. Una apuesta. Todo o nada.</p>
-        </div>
 
-        <div class="hud-panel">
-            <div class="hud-box">
-            <span class="hud-label">Saldo</span>
-            <span id="balance-display" class="hud-value">$1000</span>
-        </div>
-
-        <div class="hud-box">
-            <span class="hud-label">Apuesta</span>
-            <span id="bet-display" class="hud-value">$0</span>
-        </div>
-        </div>
-    </header>
-
-    <section class="status-panel">
-        <p id="message">Selecciona fichas y presiona "Nueva partida"</p>
-    </section>
-
-    <section class="betting-panel">
-      <div class="betting-left">
-        <p class="betting-title">Fichas</p>
-        <div class="chips-row">
-          <button class="bet-chip bet-chip-10" data-value="10">$10</button>
-          <button class="bet-chip bet-chip-25" data-value="25">$25</button>
-          <button class="bet-chip bet-chip-50" data-value="50">$50</button>
-          <button class="bet-chip bet-chip-100" data-value="100">$100</button>
-        </div>
-      </div>
-
-      <div class="betting-right">
-        <button id="clear-bet-btn" class="secondary-btn">Limpiar apuesta</button>
-      </div>
-    </section>
-
-    <section class="table-area">
-      <div class="table-ring">
-        <div class="table-surface" id="table-surface">
-          <div class="table-center-mark">
-            <span>BLACKJACK</span>
-          </div>
-
-          <div class="table-spotlight"></div>
-
-          <div class="section dealer-section">
-            <div class="section-header">
-              <h2>Dealer</h2>
-              <p id="dealer-score" class="score-badge">Puntaje: 0</p>
+        <!-- barra superior -->
+        <header class="top-bar">
+            <div class="brand-block">
+                <p class="mini-label">Mesa Premium</p>
+                <h1>Blackjack Casino</h1>
+                <p class="subtitle">Una mano. Una apuesta. Todo o nada.</p>
             </div>
-            <div id="dealer-cards" class="cards"></div>
-          </div>
 
-          <div class="table-divider"></div>
+            <!-- panel de estado -->
+            <div class="hud-panel">
+                <div class="hud-box">
+                    <span class="hud-label">Saldo</span>
+                    <!-- saldo del jugador -->
+                    <span id="balance-display" class="hud-value">$1000</span>
+                </div>
 
-          <div class="section player-section">
-            <div class="section-header">
-              <h2>Jugador</h2>
-              <p id="player-score" class="score-badge">Puntaje: 0</p>
+                <div class="hud-box">
+                    <span class="hud-label">Apuesta</span>
+                    <!-- apuesta actual -->
+                    <span id="bet-display" class="hud-value">$0</span>
+                </div>
             </div>
-            <div id="player-cards" class="cards"></div>
-          </div>
+        </header>
 
-          <div id="result-burst" class="result-burst"></div>
+        <!-- mensajes del juego -->
+        <section class="status-panel">
+            <p id="message">Selecciona fichas y presiona "Nueva partida"</p>
+        </section>
+
+        <!-- sección de apuestas -->
+        <section class="betting-panel">
+            <div class="betting-left">
+                <p class="betting-title">Fichas</p>
+
+                <!-- botones de fichas -->
+                <div class="chips-row">
+                    <button class="bet-chip bet-chip-10" data-value="10">$10</button>
+                    <button class="bet-chip bet-chip-25" data-value="25">$25</button>
+                    <button class="bet-chip bet-chip-50" data-value="50">$50</button>
+                    <button class="bet-chip bet-chip-100" data-value="100">$100</button>
+                </div>
+            </div>
+
+            <div class="betting-right">
+                <!-- limpiar apuesta -->
+                <button id="clear-bet-btn" class="secondary-btn">Limpiar apuesta</button>
+            </div>
+        </section>
+
+        <!-- mesa de juego -->
+        <section class="table-area">
+            <div class="table-ring">
+                <div class="table-surface" id="table-surface">
+
+                    <!-- marca central -->
+                    <div class="table-center-mark">
+                        <span>BLACKJACK</span>
+                    </div>
+
+                    <!-- efecto visual -->
+                    <div class="table-spotlight"></div>
+
+                    <!-- dealer -->
+                    <div class="section dealer-section">
+                        <div class="section-header">
+                            <h2>Dealer</h2>
+                            <!-- puntaje dealer -->
+                            <p id="dealer-score" class="score-badge">Puntaje: 0</p>
+                        </div>
+                        <!-- cartas dealer -->
+                        <div id="dealer-cards" class="cards"></div>
+                    </div>
+
+                    <!-- divisor -->
+                    <div class="table-divider"></div>
+
+                    <!-- jugador -->
+                    <div class="section player-section">
+                        <div class="section-header">
+                            <h2>Jugador</h2>
+                            <!-- puntaje jugador -->
+                            <p id="player-score" class="score-badge">Puntaje: 0</p>
+                        </div>
+                        <!-- cartas jugador -->
+                        <div id="player-cards" class="cards"></div>
+                    </div>
+
+                    <!-- efecto de resultado -->
+                    <div id="result-burst" class="result-burst"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- controles -->
+        <section class="controls-panel">
+            <button id="new-game-btn" class="casino-btn gold-btn">Nueva partida</button>
+            <button id="hit-btn" class="casino-btn green-btn" disabled>Pedir</button>
+            <button id="stand-btn" class="casino-btn red-btn" disabled>Plantarse</button>
+        </section>
+    </main>
+
+    <!-- popup de resultado -->
+    <div id="result-popup" class="result-popup hidden">
+        <div class="result-popup-backdrop"></div>
+
+        <div class="result-popup-card">
+            <h2 id="popup-title">Resultado</h2>
+            <p id="popup-text">Ganaste la partida.</p>
+
+            <div class="popup-actions">
+                <!-- cerrar popup -->
+                <button id="popup-close-btn" class="casino-btn gold-btn">Cerrar</button>
+            </div>
         </div>
-      </div>
-    </section>
-
-    <section class="controls-panel">
-      <button id="new-game-btn" class="casino-btn gold-btn">Nueva partida</button>
-      <button id="hit-btn" class="casino-btn green-btn" disabled>Pedir</button>
-      <button id="stand-btn" class="casino-btn red-btn" disabled>Plantarse</button>
-    </section>
-  </main>
-
-  <div id="result-popup" class="result-popup hidden">
-    <div class="result-popup-backdrop"></div>
-
-    <div class="result-popup-card">
-      <h2 id="popup-title">Resultado</h2>
-      <p id="popup-text">Ganaste la partida.</p>
-
-      <div class="popup-actions">
-        <button id="popup-close-btn" class="casino-btn gold-btn">Cerrar</button>
-      </div>
     </div>
-  </div>
 
-  <script src="script.js"></script>
+    <!-- script del juego -->
+    <script src="script.js"></script>
 </body>
 </html>

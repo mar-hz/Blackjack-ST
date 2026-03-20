@@ -1,18 +1,25 @@
+// Palos disponibles en la baraja
 const suits = ["♠", "♥", "♦", "♣"];
+
+// Valores disponibles en la baraja
 const values = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
 
-let deck = [];
-let playerHand = [];
-let dealerHand = [];
-let gameOver = false;
-let roundInProgress = false;
+// Variables principales del juego
+let deck = []; // Baraja completa
+let playerHand = []; // Mano del jugador
+let dealerHand = []; // Mano del dealer
+let gameOver = false; // Indica si la partida terminó
+let roundInProgress = false; // Indica si una ronda está en curso
 
-let balance = 1000;
-let currentBet = 0;
+// Sistema de dinero/apuestas
+let balance = 1000; // Saldo inicial del jugador
+let currentBet = 0; // Apuesta actual
 
-let hiddenDealerCardElement = null;
-let hiddenDealerCard = null;
+// Variables para manejar la carta oculta del dealer
+let hiddenDealerCardElement = null; // Elemento HTML de la carta oculta
+let hiddenDealerCard = null; // Objeto de la carta oculta
 
+// Referencias a elementos del DOM
 const dealerCardsEl = document.getElementById("dealer-cards");
 const playerCardsEl = document.getElementById("player-cards");
 const dealerScoreEl = document.getElementById("dealer-score");
@@ -22,6 +29,7 @@ const balanceDisplay = document.getElementById("balance-display");
 const betDisplay = document.getElementById("bet-display");
 const resultBurst = document.getElementById("result-burst");
 
+// Botones y pantallas principales
 const newGameBtn = document.getElementById("new-game-btn");
 const hitBtn = document.getElementById("hit-btn");
 const standBtn = document.getElementById("stand-btn");
@@ -31,20 +39,24 @@ const startScreen = document.getElementById("start-screen");
 const tableSurface = document.getElementById("table-surface");
 const betChipButtons = document.querySelectorAll(".bet-chip");
 
+// Elementos del popup de resultado
 const resultPopup = document.getElementById("result-popup");
 const popupTitle = document.getElementById("popup-title");
 const popupText = document.getElementById("popup-text");
 const popupCloseBtn = document.getElementById("popup-close-btn");
 
+// Función de espera para animaciones o pausas
 function wait(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+// Actualiza en pantalla el saldo y la apuesta actual
 function updateMoneyUI() {
   balanceDisplay.textContent = `$${balance}`;
   betDisplay.textContent = `$${currentBet}`;
 }
 
+// Muestra un mensaje en pantalla con color según el tipo
 function setMessage(text, type = "normal") {
   messageEl.textContent = text;
   messageEl.style.color =
@@ -54,6 +66,7 @@ function setMessage(text, type = "normal") {
     "#f8f3e7";
 }
 
+// Crea una nueva baraja de 52 cartas
 function createDeck() {
   const newDeck = [];
 
@@ -66,6 +79,7 @@ function createDeck() {
   return newDeck;
 }
 
+// Mezcla aleatoriamente la baraja usando Fisher-Yates
 function shuffleDeck(deckToShuffle) {
   for (let i = deckToShuffle.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -73,12 +87,14 @@ function shuffleDeck(deckToShuffle) {
   }
 }
 
+// Obtiene el valor numérico de una carta
 function getCardNumericValue(card) {
-  if (card.value === "A") return 11;
-  if (["J", "Q", "K"].includes(card.value)) return 10;
-  return parseInt(card.value, 10);
+  if (card.value === "A") return 11; // As vale 11 inicialmente
+  if (["J", "Q", "K"].includes(card.value)) return 10; // Figuras valen 10
+  return parseInt(card.value, 10); // Números se convierten directamente
 }
 
+// Calcula el puntaje total de una mano
 function calculateScore(hand) {
   let score = 0;
   let aces = 0;
@@ -88,6 +104,7 @@ function calculateScore(hand) {
     if (card.value === "A") aces++;
   }
 
+  // Si el puntaje supera 21 y hay ases, convierte ases de 11 a 1
   while (score > 21 && aces > 0) {
     score -= 10;
     aces--;
@@ -98,16 +115,19 @@ function calculateScore(hand) {
 
 
 
+// Función genérica para reproducir sonidos tipo beep
 function playBeep(frequency = 440, duration = 0.08, type = "triangle", volume = 0.03) {
   const AudioContextClass = window.AudioContext || window.webkitAudioContext;
   if (!AudioContextClass) return;
 
+  // Crea el contexto de audio solo una vez
   if (!playBeep.ctx) {
     playBeep.ctx = new AudioContextClass();
   }
 
   const ctx = playBeep.ctx;
 
+  // Si el contexto está suspendido, lo reanuda
   if (ctx.state === "suspended") {
     ctx.resume();
   }
@@ -127,40 +147,48 @@ function playBeep(frequency = 440, duration = 0.08, type = "triangle", volume = 
   oscillator.stop(ctx.currentTime + duration);
 }
 
+// Sonido al repartir carta
 function playDealSound() {
   playBeep(520, 0.06, "triangle", 0.02);
 }
 
+// Sonido al revelar carta oculta
 function playFlipSound() {
   playBeep(760, 0.08, "square", 0.025);
 }
 
+// Sonido de victoria
 function playWinSound() {
   playBeep(660, 0.09, "triangle", 0.03);
   setTimeout(() => playBeep(880, 0.11, "triangle", 0.03), 90);
   setTimeout(() => playBeep(1100, 0.15, "triangle", 0.03), 180);
 }
 
+// Sonido de derrota
 function playLoseSound() {
   playBeep(420, 0.12, "sawtooth", 0.025);
   setTimeout(() => playBeep(300, 0.18, "sawtooth", 0.022), 120);
 }
 
+// Sonido al apostar fichas
 function playChipSound() {
   playBeep(600, 0.04, "square", 0.018);
 }
 
 
+// Crea visualmente una carta en HTML
 function createCardElement(card, options = {}) {
   const { hidden = false, animate = false } = options;
 
   const cardEl = document.createElement("div");
   cardEl.classList.add("card");
 
+  // Agrega clase para animación de reparto
   if (animate) {
     cardEl.classList.add("dealing");
   }
 
+  // Si la carta está oculta, se muestra el reverso
   if (hidden) {
     cardEl.classList.add("back");
 
@@ -171,10 +199,12 @@ function createCardElement(card, options = {}) {
     return cardEl;
   }
 
+  // Si la carta es roja, agrega clase especial
   if (card.suit === "♥" || card.suit === "♦") {
     cardEl.classList.add("red");
   }
 
+  // Guarda el contenido en atributos y texto
   cardEl.setAttribute("data-top", `${card.value}${card.suit}`);
   cardEl.setAttribute("data-bottom", `${card.value}${card.suit}`);
   cardEl.textContent = `${card.value}${card.suit}`;
@@ -182,6 +212,7 @@ function createCardElement(card, options = {}) {
   return cardEl;
 }
 
+// Limpia el tablero para una nueva ronda
 function clearBoard() {
   dealerCardsEl.innerHTML = "";
   playerCardsEl.innerHTML = "";
@@ -191,25 +222,30 @@ function clearBoard() {
   hiddenDealerCard = null;
 }
 
+// Actualiza puntajes en pantalla
 function updateScores(showDealerFull = false) {
   const playerScore = calculateScore(playerHand);
   playerScoreEl.textContent = `Puntaje: ${playerScore}`;
 
   if (showDealerFull) {
+    // Muestra todo el puntaje del dealer
     const dealerScore = calculateScore(dealerHand);
     dealerScoreEl.textContent = `Puntaje: ${dealerScore}`;
   } else {
+    // Solo muestra el valor de la primera carta visible del dealer
     const visibleScore = dealerHand.length > 0 ? getCardNumericValue(dealerHand[0]) : 0;
     dealerScoreEl.textContent = `Puntaje: ${visibleScore}`;
   }
 }
 
+// Toma una carta del deck y la agrega a una mano
 function dealCard(hand) {
   const card = deck.pop();
   hand.push(card);
   return card;
 }
 
+// Agrega una carta visualmente al contenedor correspondiente
 function appendCardToUI(container, card, hidden = false) {
   const cardEl = createCardElement(card, { hidden, animate: true });
   container.appendChild(cardEl);
@@ -217,6 +253,7 @@ function appendCardToUI(container, card, hidden = false) {
   return cardEl;
 }
 
+// Revela la carta oculta del dealer con animación
 async function revealHiddenDealerCard() {
   if (!hiddenDealerCardElement || !hiddenDealerCard) return;
 
@@ -232,27 +269,32 @@ async function revealHiddenDealerCard() {
   await wait(450);
 }
 
+// Secuencia inicial de reparto
 async function initialDealSequence() {
   clearBoard();
   updateScores(false);
 
   let card;
 
+  // Primera carta del jugador
   card = dealCard(playerHand);
   appendCardToUI(playerCardsEl, card, false);
   updateScores(false);
   await wait(340);
 
+  // Primera carta del dealer
   card = dealCard(dealerHand);
   appendCardToUI(dealerCardsEl, card, false);
   updateScores(false);
   await wait(340);
 
+  // Segunda carta del jugador
   card = dealCard(playerHand);
   appendCardToUI(playerCardsEl, card, false);
   updateScores(false);
   await wait(340);
 
+  // Segunda carta del dealer, oculta
   card = dealCard(dealerHand);
   hiddenDealerCard = card;
   hiddenDealerCardElement = appendCardToUI(dealerCardsEl, card, true);
@@ -260,6 +302,7 @@ async function initialDealSequence() {
   await wait(360);
 }
 
+// Agrega dinero a la apuesta actual
 function addToBet(amount) {
   if (roundInProgress) {
     setMessage("No puedes modificar la apuesta durante la ronda.", "lose");
@@ -278,6 +321,7 @@ function addToBet(amount) {
   setMessage(`Apuesta actual: $${currentBet}`);
 }
 
+// Limpia la apuesta y devuelve el dinero al saldo
 function clearBet() {
   if (roundInProgress) {
     setMessage("No puedes limpiar la apuesta en medio de una ronda.", "lose");
@@ -291,16 +335,19 @@ function clearBet() {
 }
 
 
+// Desactiva botones de acción durante la ronda
 function disableRoundButtons() {
   hitBtn.disabled = true;
   standBtn.disabled = true;
 }
 
+// Activa botones de acción
 function enableRoundButtons() {
   hitBtn.disabled = false;
   standBtn.disabled = false;
 }
 
+// Activa o desactiva controles de apuesta
 function setBettingEnabled(enabled) {
   betChipButtons.forEach(btn => {
     btn.disabled = !enabled;
@@ -313,6 +360,7 @@ function setBettingEnabled(enabled) {
   clearBetBtn.style.cursor = enabled ? "pointer" : "not-allowed";
 }
 
+// Verifica si alguien tiene blackjack al inicio
 function checkBlackjack() {
   const playerScore = calculateScore(playerHand);
   const dealerScore = calculateScore(dealerHand);
@@ -335,6 +383,7 @@ function checkBlackjack() {
   return false;
 }
 
+// Inicia una nueva partida
 async function startNewGame() {
   if (roundInProgress) return;
 
@@ -350,6 +399,7 @@ async function startNewGame() {
   setBettingEnabled(false);
   disableRoundButtons();
 
+  // Crear y mezclar nueva baraja
   deck = createDeck();
   shuffleDeck(deck);
   playerHand = [];
@@ -358,12 +408,14 @@ async function startNewGame() {
   setMessage("Repartiendo cartas...");
   await initialDealSequence();
 
+  // Si no hubo blackjack, comienza el turno del jugador
   if (!checkBlackjack()) {
     enableRoundButtons();
     setMessage("Tu turno: pide una carta o plántate.");
   }
 }
 
+// Acción del jugador al pedir una carta
 async function playerHit() {
   if (gameOver || !roundInProgress) return;
 
@@ -377,11 +429,13 @@ async function playerHit() {
 
   const playerScore = calculateScore(playerHand);
 
+  // Si se pasa de 21, pierde
   if (playerScore > 21) {
     endGame("Te pasaste de 21. Perdiste.", "lose");
     return;
   }
 
+  // Si llega a 21, se planta automáticamente
   if (playerScore === 21) {
     await playerStand();
     return;
@@ -391,6 +445,7 @@ async function playerHit() {
   setMessage("Tu turno: pide una carta o plántate.");
 }
 
+// Acción del jugador al plantarse
 async function playerStand() {
   if (gameOver || !roundInProgress) return;
 
@@ -402,6 +457,7 @@ async function playerStand() {
 
   let dealerScore = calculateScore(dealerHand);
 
+  // El dealer roba mientras tenga menos de 17
   while (dealerScore < 17) {
     await wait(430);
     const card = dealCard(dealerHand);
@@ -414,6 +470,7 @@ async function playerStand() {
   determineWinner();
 }
 
+// Determina el ganador final de la ronda
 function determineWinner() {
   const playerScore = calculateScore(playerHand);
   const dealerScore = calculateScore(dealerHand);
@@ -433,6 +490,7 @@ function determineWinner() {
 }
 
 
+// Activa un destello visual en la mesa según resultado
 function triggerTableFlash(type) {
   tableSurface.classList.remove("flash-win", "flash-lose");
   void tableSurface.offsetWidth;
@@ -444,6 +502,7 @@ function triggerTableFlash(type) {
   }
 }
 
+// Activa un burst visual según resultado
 function triggerBurst(type) {
   resultBurst.classList.remove("show-win", "show-lose");
   void resultBurst.offsetWidth;
@@ -455,23 +514,27 @@ function triggerBurst(type) {
   }
 }
 
+// Pago cuando el jugador gana
 function payWin(multiplier = 2) {
   balance += currentBet * multiplier;
   currentBet = 0;
   updateMoneyUI();
 }
 
+// Pago en caso de empate, se devuelve la apuesta
 function payPush() {
   balance += currentBet;
   currentBet = 0;
   updateMoneyUI();
 }
 
+// Pérdida de la apuesta
 function loseBet() {
   currentBet = 0;
   updateMoneyUI();
 }
 
+// Revela instantáneamente la carta oculta del dealer si aún existe
 function revealDealerCardImmediatelyIfNeeded() {
   if (!hiddenDealerCardElement || !hiddenDealerCard) return;
 
@@ -482,6 +545,7 @@ function revealDealerCardImmediatelyIfNeeded() {
   hiddenDealerCard = null;
 }
 
+// Muestra popup con el resultado de la ronda
 function showResultPopup(message, resultType) {
   if (!resultPopup) return;
 
@@ -504,6 +568,7 @@ function showResultPopup(message, resultType) {
   popupText.textContent = message;
 }
 
+// Oculta el popup de resultado
 function hideResultPopup() {
   if (!resultPopup) return;
 
@@ -511,6 +576,7 @@ function hideResultPopup() {
   resultPopup.classList.remove("win", "lose", "draw");
 }
 
+// Finaliza la ronda y aplica pagos/resultados
 function endGame(message, resultType) {
   gameOver = true;
   roundInProgress = false;
@@ -524,14 +590,14 @@ function endGame(message, resultType) {
 
   if (resultType === "blackjack") {
     setMessage("Ronda terminada.");
-    payWin(2.5);
+    payWin(2.5); // Blackjack paga 2.5x
     triggerTableFlash("win");
     triggerBurst("win");
     playWinSound();
     showResultPopup(message, "blackjack");
   } else if (resultType === "win" || lower.includes("ganaste")) {
     setMessage("Ronda terminada.");
-    payWin(2);
+    payWin(2); // Victoria normal paga 2x
     triggerTableFlash("win");
     triggerBurst("win");
     playWinSound();
@@ -549,12 +615,14 @@ function endGame(message, resultType) {
     showResultPopup(message, "lose");
   }
 
+  // Si el jugador se quedó sin saldo, se muestra advertencia
   if (balance <= 0 && currentBet === 0) {
     showResultPopup("Te quedaste sin saldo. Recarga el juego manualmente o reinicia el valor inicial.", "lose");
   }
 }
 
 
+// Acción para entrar al juego desde la pantalla inicial
 function enterGame() {
   const AudioContextClass = window.AudioContext || window.webkitAudioContext;
   if (AudioContextClass && playBeep.ctx && playBeep.ctx.state === "suspended") {
@@ -565,12 +633,14 @@ function enterGame() {
   setMessage('Selecciona fichas y presiona "Nueva partida".');
 }
 
+// Eventos de botones principales
 enterGameBtn.addEventListener("click", enterGame);
 newGameBtn.addEventListener("click", startNewGame);
 hitBtn.addEventListener("click", playerHit);
 standBtn.addEventListener("click", playerStand);
 clearBetBtn.addEventListener("click", clearBet);
 
+// Eventos para las fichas de apuesta
 betChipButtons.forEach(btn => {
   btn.addEventListener("click", () => {
     const value = Number(btn.dataset.value);
@@ -578,10 +648,12 @@ betChipButtons.forEach(btn => {
   });
 });
 
+// Evento para cerrar popup de resultado
 if (popupCloseBtn) {
   popupCloseBtn.addEventListener("click", hideResultPopup);
 }
 
+// Estado inicial de la interfaz
 updateMoneyUI();
 setBettingEnabled(true);
 hideResultPopup();
